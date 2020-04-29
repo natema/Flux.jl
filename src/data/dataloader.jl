@@ -12,7 +12,7 @@ end
 
 """
     DataLoader(data; batchsize=1, shuffle=false, partial=true)
-    
+
 An object that iterates over mini-batches of `data`, each mini-batch containing `batchsize` observations
 (except possibly the last one). 
 
@@ -36,7 +36,7 @@ Example usage:
 
     train_loader.data   # original dataset
 
-    # similar but yielding tuples
+    # similar, but yielding tuples
     train_loader = DataLoader((Xtrain,), batchsize=2) 
     for (x,) in train_loader
         @assert size(x) == (10, 2)
