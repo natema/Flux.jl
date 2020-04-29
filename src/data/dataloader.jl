@@ -11,20 +11,18 @@ struct DataLoader
 end
 
 """
-    DataLoader(data...; batchsize=1, shuffle=false, partial=true)
-    DataLoader(data::Tuple; ...)
-
+    DataLoader(data; batchsize=1, shuffle=false, partial=true)
+    
 An object that iterates over mini-batches of `data`, each mini-batch containing `batchsize` observations
 (except possibly the last one). 
 
-Takes as input one or more data tensors (e.g. X in unsupervised learning, X and Y in 
-supervised learning,) or a tuple of such tensors. 
+Takes as input a data tensors or a tuple of one or more such tensors. 
 The last dimension in each tensor is considered to be the observation dimension. 
 
 If `shuffle=true`, shuffles the observations each time iterations are re-started.
 If `partial=false`, drops the last mini-batch if it is smaller than the batchsize.
 
-The original data is preserved as a tuple in the `data` field of the DataLoader. 
+The original data is preserved in the `data` field of the DataLoader. 
 
 Example usage:
 
@@ -36,16 +34,9 @@ Example usage:
         ...
     end
 
-    train_loader = DataLoader(Xtrain, batchsize=2) 
-    # iterate over 50 mini-batches of size 2
-    for x in train_loader
-        @assert size(x) == (10, 2)
-        ...
-    end
-
     train_loader.data   # original dataset
 
-    # similar but yelding tuples
+    # similar but yielding tuples
     train_loader = DataLoader((Xtrain,), batchsize=2) 
     for (x,) in train_loader
         @assert size(x) == (10, 2)
@@ -54,8 +45,6 @@ Example usage:
 
     Xtrain = rand(10, 100)
     Ytrain = rand(100)
-    train_loader = DataLoader(Xtrain, Ytrain, batchsize=2, shuffle=true) 
-    # or equivalently
     train_loader = DataLoader((Xtrain, Ytrain), batchsize=2, shuffle=true) 
     for epoch in 1:100
         for (x, y) in train_loader
@@ -81,8 +70,6 @@ function DataLoader(data; batchsize=1, shuffle=false, partial=true)
     ids = 1:min(n, batchsize)
     DataLoader(data, batchsize, n, partial, imax, [1:n;], shuffle)
 end
-
-DataLoader(data...; kws...) = DataLoader(data; kws...)
 
 @propagate_inbounds function Base.iterate(d::DataLoader, i=0)     # returns data in d.indices[i+1:i+batchsize]
     i >= d.imax && return nothing

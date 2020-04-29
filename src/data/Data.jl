@@ -10,6 +10,7 @@ export CMUDict, cmudict
 
 deps(path...) = joinpath(@__DIR__, "..", "..", "deps", path...)
 
+
 function download_and_verify(url, path, hash)
     tmppath = tempname()
     download(url, tmppath)
@@ -50,5 +51,8 @@ export Iris
 
 include("housing.jl")
 export Housing
+
+
+@deprecate DataLoader(x...; kws...) DataLoader(x; kws...)
 
 end
